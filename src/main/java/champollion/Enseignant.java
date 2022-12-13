@@ -1,8 +1,11 @@
 package champollion;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Enseignant extends Personne {
 
-    // TODO : rajouter les autres méthodes présentes dans le diagramme UML
+private ArrayList<ServicePrevu> lesServices = new ArrayList<>();
+private LinkedList<Intervention> lesInte = new LinkedList<>();
 
     public Enseignant(String nom, String email) {
         super(nom, email);
@@ -17,8 +20,15 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevues() {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        //throw new UnsupportedOperationException("Pas encore implémenté");
+        int equivalentTD = 0;
+        for (ServicePrevu sp : lesServices){
+            equivalentTD += 1.5*sp.getVolumeCM();
+            equivalentTD += sp.getVolumeTD();
+            equivalentTD += 0.75*sp.getVolumeTP();
+        }
+
+        return Math.round(equivalentTD);
     }
 
     /**
@@ -31,8 +41,16 @@ public class Enseignant extends Personne {
      *
      */
     public int heuresPrevuesPourUE(UE ue) {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        //throw new UnsupportedOperationException("Pas encore implémenté");
+        int equivalentTD = 0;
+        for (ServicePrevu spUe : lesServices){
+            equivalentTD += 1.5*spUe.getVolumeCM();
+            equivalentTD += spUe.getVolumeTD();
+            equivalentTD += 0.75*spUe.getVolumeTP();
+        }
+
+        return Math.round(equivalentTD);
+
     }
 
     /**
@@ -44,8 +62,41 @@ public class Enseignant extends Personne {
      * @param volumeTP le volume d'heures de TP
      */
     public void ajouteEnseignement(UE ue, int volumeCM, int volumeTD, int volumeTP) {
-        // TODO: Implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        //throw new UnsupportedOperationException("Pas encore implémenté");
+        ServicePrevu sp = new ServicePrevu(volumeCM, volumeTD, volumeTP, this, ue);
+        lesServices.add(sp);
+    }
+
+    public void ajouteIntervention(Salle s, UE ue, Enseignant e, TypeIntervention typeInte, Date debut, int duree){
+        Intervention inte = new Intervention(s, ue, debut, duree, typeInte, this);
+        lesInte.add(inte);
+    }
+
+    public boolean enSousService(){
+       if (heuresPrevues()<192){
+           return true;
+       }
+       else{
+           return false;
+       }
+    }
+
+    public int resteAPlanifier(UE ue, TypeIntervention typeInte){
+        int heurePlan = 0;
+        for(int i = 0; i< lesInte.size(); i++){
+            switch(lesInte.get(i).getTypeInte()){
+                case CM:
+                    heurePlan += lesInte.get(i).getDuree()*1.5;
+                    break;
+                case TD:
+                    heurePlan += lesInte.get(i).getDuree();
+                    break;
+                case TP:
+                    heurePlan += lesInte.get(i).getDuree()*0.75;
+                    break;
+            }
+        }
+        return Math.round(heurePlan);
     }
 
 }
