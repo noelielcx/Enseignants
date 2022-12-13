@@ -83,20 +83,26 @@ private LinkedList<Intervention> lesInte = new LinkedList<>();
 
     public int resteAPlanifier(UE ue, TypeIntervention typeInte){
         int heurePlan = 0;
-        for(int i = 0; i< lesInte.size(); i++){
-            switch(lesInte.get(i).getTypeInte()){
+        int heureUe = 0;
+        for(ServicePrevu sp : lesServices){
+            switch(typeInte){
                 case CM:
-                    heurePlan += lesInte.get(i).getDuree()*1.5;
+                    heureUe += sp.getVolumeCM();
                     break;
                 case TD:
-                    heurePlan += lesInte.get(i).getDuree();
+                    heureUe += sp.getVolumeTD();
                     break;
                 case TP:
-                    heurePlan += lesInte.get(i).getDuree()*0.75;
+                    heureUe += sp.getVolumeTP();
                     break;
             }
         }
-        return Math.round(heurePlan);
+        for (Intervention i : lesInte){
+            if(i.getUe().equals(ue) && i.getTypeInte() == typeInte){
+                heurePlan += i.getDuree();
+            }
+        }
+        return heureUe - heurePlan;
     }
 
 }

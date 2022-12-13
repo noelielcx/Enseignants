@@ -31,6 +31,9 @@ public class Intervention {
         this.typeInte = typeInte;
     }
 
+    public Intervention(Date date, int i, int i1, Salle salle, TypeIntervention cm, Enseignant untel, UE uml) {
+    }
+
     public Date getDebut() {
         return debut;
     }
